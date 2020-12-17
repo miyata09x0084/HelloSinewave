@@ -141,6 +141,8 @@ void HelloSinewaveAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+    
+    float level = 0.5f;
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
@@ -153,6 +155,16 @@ void HelloSinewaveAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         auto* channelData = buffer.getWritePointer (channel);
 
         // ..do something to the data...
+    }
+    
+    for (int channel = 0; channel < totalNumOutputChannels; ++channel)
+    {
+        float* channelData = buffer.getWritePointer(channel);
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            const float currentAngle = juce::MathConstants<float>::pi * 2.0f * sample / buffer.getNumSamples();
+            channelData[sample] = sinf(currentAngle) * level;
+        }
     }
 }
 
